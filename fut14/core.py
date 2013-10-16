@@ -332,3 +332,4 @@ class Core(object):
         """ Return player info from his resourceid """
 
         return self.get_player_info(self.baseID(resourceid))
+        
