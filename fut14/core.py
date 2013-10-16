@@ -293,3 +293,42 @@ class Core(object):
         self.r.headers['X-HTTP-Method-Override'] = 'GET'  # restore headers default
 
         return True
+
+
+    
+    def baseID(self,resouceid, v=False):
+        """return a baseid from a resourceid. If you pass v = True will return an objcet with the baseid and the version"""
+
+        version = 0
+
+        while(resouceid > 16777216):
+            version = version + 1
+            if version == 1:
+                resouceid = resouceid - 1342177280
+            elif(version == 2):
+                resouceid = resouceid - 50331648
+            else:
+                resouceid = resouceid - 16777216
+
+        if v == False:
+            return resouceid
+        else:
+            ar = {'baseID': resouceid, 'version': version}
+            return ar
+
+
+    def get_player_info (self, id):
+        """Return playerinfo from his BASEID """
+
+        headers = {'Content-Type': 'application/json'}
+
+        r = requests.get(urls['player_info']+ str(id) + '.json', headers=headers)
+
+        if(r.status_code == 200):
+            return json.loads(r.content)['Item']
+        return False
+
+    def get_player_info_from_resourceid(self, resourceid):
+        """ Return player info from his resourceid """
+
+        return self.get_player_info(self.baseID(resourceid))
